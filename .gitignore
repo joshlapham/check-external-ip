@@ -1,3 +1,10 @@
+# Compiled binaries
+files
+helloworld
+check_ip
+
+# Files for testing
+test.txt
 
 # Created by https://www.gitignore.io/api/osx,c++,linux,python,windows
 # Edit at https://www.gitignore.io/?templates=osx,c++,linux,python,windows
