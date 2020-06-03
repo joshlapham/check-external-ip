@@ -32,7 +32,8 @@ public:
         {
             while (getline(storage_file, line))
             {
-                cout << line << '\n';
+                // cout << line << '\n'; // Debugging
+                
                 result = parser.parse(line);
             }
 
@@ -40,12 +41,14 @@ public:
         }
         else
         {
+            // TODO: Should be throwing an exception here
             cout << "Unable to open file";
             return "Unable to open file";
         }
 
         Object::Ptr object = result.extract<Object::Ptr>();
 
+        // TODO: Make `lastKnownIpAddress` string a constant
         Var last_known_ip = object->get("lastKnownIpAddress");
 
         std::string last_known_ip_str = last_known_ip.toString();
@@ -70,21 +73,22 @@ class NoStorageFileException : public exception
 int main()
 {
     // Parse environment variables
-    // TODO: Throw exception & stop execution if any of these environment variables are null
     try
     {
-        const char *url = std::getenv("JL_CHECK_IP_URL");
+        // TODO: Throw exception & stop execution if any of these environment variables are null
         const char *storage_filepath = std::getenv("JL_CHECK_IP_STORAGE_FILEPATH");
-        const char *vpn_profile_filepath = std::getenv("JL_CHECK_IP_VPN_PROFILE_FILEPATH");
+        // const char *url = std::getenv("JL_CHECK_IP_URL");
+        // const char *vpn_profile_filepath = std::getenv("JL_CHECK_IP_VPN_PROFILE_FILEPATH");
 
         if (storage_filepath == NULL)
         {
             throw NoStorageFileException;
         }
 
-        cout << url << endl;
-        cout << storage_filepath << endl;
-        cout << vpn_profile_filepath << endl;
+        // Debugging
+        // cout << storage_filepath << endl;
+        // cout << url << endl;
+        // cout << vpn_profile_filepath << endl;
 
         StorageFile storage_file_obj(storage_filepath);
 
