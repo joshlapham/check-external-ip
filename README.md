@@ -1,6 +1,12 @@
-# check-ip
+# check-external-ip
 
-TODO
+By Josh Lapham [josh@joshlapham.com]
+
+License: [Beerware](https://en.wikipedia.org/wiki/Beerware)
+
+## What This Is
+
+Keep track of the current external IP address in a local JSON file. If it has changed since last run, then take action (e.g. update VPN profile file, etc).
 
 ## How to Build
 
