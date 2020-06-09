@@ -5,6 +5,7 @@ check_ip
 
 # Files for testing
 test.txt
+check_ip.json
 
 # Created by https://www.gitignore.io/api/osx,c++,linux,python,windows
 # Edit at https://www.gitignore.io/?templates=osx,c++,linux,python,windows
