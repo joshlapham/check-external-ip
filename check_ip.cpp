@@ -39,7 +39,7 @@ private:
 public:
     StorageFile(std::string);
 
-    std::string checkIpInStorageFile(std::string response_ip_address)
+    std::string lastKnownIpAddress()
     {
         string line;
         ifstream storage_file(_filepath);
@@ -52,8 +52,6 @@ public:
         {
             while (getline(storage_file, line))
             {
-                // cout << line << '\n'; // Debugging
-                
                 result = parser.parse(line);
             }
 
@@ -198,9 +196,7 @@ int main()
 
         // Load storage file; check last known IP address value in storage file
         StorageFile storageFile(storage_filepath);
-
-        // TODO: Review this; we don't use the parameter that is passed here
-        std::string lastKnownIpAddress = storageFile.checkIpInStorageFile("123.456.0");
+        std::string lastKnownIpAddress = storageFile.lastKnownIpAddress();
 
         logger.information("Last known IP (from storage file): %s", lastKnownIpAddress);
 
