@@ -78,6 +78,37 @@ class NoStorageFileException : public exception
     }
 } NoStorageFileException;
 
+std::string fetchPublicIpAddress(std::string url) {
+    // Make network request; parse current IP address from response
+    URI uri(url);
+    const Context::Ptr context = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
+    HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
+    
+    cout << uri.getHost() << endl;
+    cout << uri.getPort() << endl;
+    // cout << session << endl;
+
+    string path(uri.getPathAndQuery());
+    if (path.empty()) path = "/";
+
+    // cout << path << endl;
+
+    HTTPRequest req(HTTPRequest::HTTP_GET, path, HTTPMessage::HTTP_1_1);
+
+    session.sendRequest(req);
+
+    // Parse response
+    HTTPResponse res;
+    cout << res.getStatus() << " " << res.getReason() << endl;
+
+    // Print reponse
+    std::string currentPublicIpAddress;
+    istream &is = session.receiveResponse(res);
+    StreamCopier::copyToString(is, currentPublicIpAddress);
+
+    return currentPublicIpAddress;
+}
+
 int main()
 {
     // Parse environment variables
@@ -97,40 +128,18 @@ int main()
         // cout << storage_filepath << endl;
         // cout << url << endl;
         // cout << vpn_profile_filepath << endl;
+        cout << "Fetching current public IP address .." << endl;
 
-        // TODO: Refactor network request logic to own function
-        // Make network request; parse current IP address from response
-        URI uri(url);
-        const Context::Ptr context = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
-        HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
-        
-        cout << uri.getHost() << endl;
-        cout << uri.getPort() << endl;
-        // cout << session << endl;
+        std::string currentPublicIpAddress = fetchPublicIpAddress(url);
 
-        string path(uri.getPathAndQuery());
-        if (path.empty()) path = "/";
-
-        // cout << path << endl;
-
-        HTTPRequest req(HTTPRequest::HTTP_GET, path, HTTPMessage::HTTP_1_1);
-
-        session.sendRequest(req);
-
-        // Parse response
-        HTTPResponse res;
-        cout << res.getStatus() << " " << res.getReason() << endl;
-
-        // Print reponse
-        istream &is = session.receiveResponse(res);
-        StreamCopier::copyStream(is, cout);
+        cout << "Fetched current public IP address: " << currentPublicIpAddress << endl;
 
         // Load storage file; check last known IP address value in storage file
         StorageFile storage_file_obj(storage_filepath);
 
         std::string last_known_ip = storage_file_obj.checkIpInStorageFile("123.456.0");
 
-        cout << "Last known IP: " << last_known_ip << endl;
+        cout << "Last known IP (from storage file): " << last_known_ip << endl;
 
         // TODO: Finish implementing -- compare IP addresses, act accordingly
 
