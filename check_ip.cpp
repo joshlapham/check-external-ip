@@ -13,11 +13,25 @@
 #include <Poco/Path.h>
 #include <Poco/URI.h>
 
+#include "Poco/Logger.h"
+#include "Poco/PatternFormatter.h"
+#include "Poco/FormattingChannel.h"
+#include "Poco/ConsoleChannel.h"
+#include "Poco/FileChannel.h"
+#include "Poco/Message.h"
+
 using namespace std;
 using namespace Poco::JSON;
 using namespace Poco::Dynamic;
 using namespace Poco::Net;
 using namespace Poco;
+
+using Poco::Logger;
+using Poco::PatternFormatter;
+using Poco::FormattingChannel;
+using Poco::ConsoleChannel;
+using Poco::FileChannel;
+using Poco::Message;
 
 class StorageFile
 {
@@ -160,28 +174,29 @@ int main()
             throw NoStorageFileException;
         }
 
-        // Debugging
-        // cout << storage_filepath << endl;
-        // cout << url << endl;
-        // cout << vpn_profile_filepath << endl;
-        cout << "Fetching current public IP address .." << endl;
+        // Initialise logger
+        FormattingChannel *pFCConsole = new FormattingChannel(new PatternFormatter("%s: %p: %t"));
+        pFCConsole->setChannel(new ConsoleChannel);
+        pFCConsole->open();
+        Logger &logger = Logger::create("ConsoleLogger", pFCConsole, Message::PRIO_INFORMATION);
+
+        logger.information("Fetching current public IP address ..");
 
         std::string currentPublicIpAddress = fetchPublicIpAddress(url);
 
-        cout << "Fetched current public IP address: " << currentPublicIpAddress << endl;
-        cout << currentPublicIpAddress << endl;
+        logger.information("Fetched current public IP address: %s", currentPublicIpAddress);
 
         // Load storage file; check last known IP address value in storage file
         StorageFile storage_file_obj(storage_filepath);
 
         std::string lastKnownIpAddress = storage_file_obj.checkIpInStorageFile("123.456.0");
 
-        cout << "Last known IP (from storage file): " << lastKnownIpAddress << endl;
+        logger.information("Last known IP (from storage file): %s", lastKnownIpAddress);
 
         // Check if IP addresses match
         bool ipAddressesMatch = currentPublicIpAddress == lastKnownIpAddress;
 
-        cout << "IP addresses match: " << ipAddressesMatch;
+        logger.information("IP addresses match: %d", ipAddressesMatch);
 
         // TODO: Implement better exception handling
         // TODO: Update VPN profile file
