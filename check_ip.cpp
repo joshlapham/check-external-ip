@@ -185,9 +185,10 @@ int main()
         logger.information("Fetched current public IP address: %s", currentPublicIpAddress);
 
         // Load storage file; check last known IP address value in storage file
-        StorageFile storage_file_obj(storage_filepath);
+        StorageFile storageFile(storage_filepath);
 
-        std::string lastKnownIpAddress = storage_file_obj.checkIpInStorageFile("123.456.0");
+        // TODO: Review this; we don't use the parameter that is passed here
+        std::string lastKnownIpAddress = storageFile.checkIpInStorageFile("123.456.0");
 
         logger.information("Last known IP (from storage file): %s", lastKnownIpAddress);
 
