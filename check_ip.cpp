@@ -104,6 +104,9 @@ std::string fetchPublicIpAddress(std::string url) {
     istream &is = session.receiveResponse(res);
     StreamCopier::copyToString(is, currentPublicIpAddress);
 
+    // Strip newline character
+    currentPublicIpAddress.erase(std::remove(currentPublicIpAddress.begin(), currentPublicIpAddress.end(), '\n'), currentPublicIpAddress.end());
+
     return currentPublicIpAddress;
 }
 
@@ -131,6 +134,7 @@ int main()
         std::string currentPublicIpAddress = fetchPublicIpAddress(url);
 
         cout << "Fetched current public IP address: " << currentPublicIpAddress << endl;
+        cout << currentPublicIpAddress << endl;
 
         // Load storage file; check last known IP address value in storage file
         StorageFile storage_file_obj(storage_filepath);
@@ -139,11 +143,13 @@ int main()
 
         cout << "Last known IP (from storage file): " << lastKnownIpAddress << endl;
 
-        // TODO: Finish implementing -- compare IP addresses, act accordingly
-        // TODO: Think there might be a line break at the end of `currentPublicIpAddress` value maybe
-        bool bothIpAddressesAreTheSame = currentPublicIpAddress == lastKnownIpAddress;
+        // Check if IP addresses match
+        bool ipAddressesMatch = currentPublicIpAddress == lastKnownIpAddress;
 
-        cout << "IP addresses match: " << bothIpAddressesAreTheSame;
+        cout << "IP addresses match: " << ipAddressesMatch;
+
+        // TODO: Update VPN profile file
+        // TODO: Send notifications
 
         return 0;
     }
