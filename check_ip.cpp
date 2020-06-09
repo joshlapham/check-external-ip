@@ -90,6 +90,14 @@ class NoStorageFileException : public exception
     }
 } NoStorageFileException;
 
+class InvalidHTTPResponseException : public exception
+{
+    virtual const char *what() const throw()
+    {
+        return "HTTP response code was not 200";
+    }
+} InvalidHTTPResponseException;
+
 std::string fetchPublicIpAddress(std::string url) {
     // Make network request; parse current IP address from response
     URI uri(url);
@@ -105,16 +113,20 @@ std::string fetchPublicIpAddress(std::string url) {
     session.sendRequest(req);
 
     // Parse response
-    // TODO: Implement better error handling; based on response status code
     HTTPResponse res;
 
-    cout << res.getStatus() << " " << res.getReason() << endl; // Debugging
+    // TODO: Make status code value a constant
+    if (res.getStatus() != 200)
+    {
+        throw InvalidHTTPResponseException;
+    }
 
     std::string currentPublicIpAddress;
     istream &is = session.receiveResponse(res);
     StreamCopier::copyToString(is, currentPublicIpAddress);
 
     // Strip newline character
+    // TODO: Should probably move this logic elsewhere
     currentPublicIpAddress.erase(std::remove(currentPublicIpAddress.begin(), currentPublicIpAddress.end(), '\n'), currentPublicIpAddress.end());
 
     return currentPublicIpAddress;
