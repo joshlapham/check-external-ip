@@ -110,6 +110,34 @@ std::string fetchPublicIpAddress(std::string url) {
     return currentPublicIpAddress;
 }
 
+// TODO: Finish implementing this function
+void updateIpAddressInStorageFile(std::string filepath, std::string publicIpAddress) {}
+
+/*
+def update_ip_in_storage_file(filepath, response_ip_address):
+    try:
+        with open(filepath, 'r+') as storage_file:
+            contents = json.load(storage_file)
+            contents['lastKnownIpAddress'] = response_ip_address
+            storage_file.write(json.dumps(contents))
+
+    except ValueError:
+        # If we got here, then storage file contents was empty
+        print('Storage file contents was empty')
+
+    except OSError:
+        # If we got here; then storage file failed to update with new IP address
+        print('Failed to update IP address in storage file; overwriting file contents ..')
+
+    finally:
+        with open(filepath, 'w') as storage_file:
+            contents = {
+                "lastKnownIpAddress": response_ip_address
+            }
+
+            storage_file.write(json.dumps(contents))
+*/
+
 int main()
 {
     // Parse environment variables
@@ -150,6 +178,26 @@ int main()
 
         // TODO: Update VPN profile file
         // TODO: Send notifications
+        /*
+        # If different, then update storage file
+        if last_known_ip != response_ip_address:
+            logger.info('Last known IP does not match current IP!')
+
+            update_ip_in_storage_file(storage_filepath, response_ip_address)
+
+            logger.info('Successfully updated IP address in storage file')
+
+            # Update VPN config file
+            logger.info('Updating VPN profile ..')
+
+            update_vpn_config_file(vpn_profile_filepath, response_ip_address)
+
+            logger.info('Successfully updated IP address in VPN profile')
+
+            if args.notify:
+                logger.info('Sending notification ..')
+                _notify("Updated IP Address", response_ip_address, prowl_title)
+        */
 
         return 0;
     }
