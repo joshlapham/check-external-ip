@@ -137,9 +137,9 @@ int main()
         // Load storage file; check last known IP address value in storage file
         StorageFile storage_file_obj(storage_filepath);
 
-        std::string last_known_ip = storage_file_obj.checkIpInStorageFile("123.456.0");
+        std::string lastKnownIpAddress = storage_file_obj.checkIpInStorageFile("123.456.0");
 
-        cout << "Last known IP (from storage file): " << last_known_ip << endl;
+        cout << "Last known IP (from storage file): " << lastKnownIpAddress << endl;
 
         // TODO: Finish implementing -- compare IP addresses, act accordingly
 
