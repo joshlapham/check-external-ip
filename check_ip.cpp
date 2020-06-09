@@ -84,9 +84,6 @@ std::string fetchPublicIpAddress(std::string url) {
     const Context::Ptr context = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
     HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
     
-    // cout << uri.getHost() << endl;
-    // cout << uri.getPort() << endl;
-
     // Parse URL path; handle if none
     string path(uri.getPathAndQuery());
     if (path.empty()) path = "/";
@@ -96,6 +93,7 @@ std::string fetchPublicIpAddress(std::string url) {
     session.sendRequest(req);
 
     // Parse response
+    // TODO: Implement better error handling; based on response status code
     HTTPResponse res;
 
     cout << res.getStatus() << " " << res.getReason() << endl; // Debugging
