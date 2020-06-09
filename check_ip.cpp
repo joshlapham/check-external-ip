@@ -142,6 +142,10 @@ int main()
         cout << "Last known IP (from storage file): " << lastKnownIpAddress << endl;
 
         // TODO: Finish implementing -- compare IP addresses, act accordingly
+        // TODO: Think there might be a line break at the end of `currentPublicIpAddress` value maybe
+        bool bothIpAddressesAreTheSame = currentPublicIpAddress == lastKnownIpAddress;
+
+        cout << "IP addresses match: " << bothIpAddressesAreTheSame;
 
         return 0;
     }
