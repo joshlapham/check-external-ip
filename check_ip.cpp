@@ -138,6 +138,15 @@ def update_ip_in_storage_file(filepath, response_ip_address):
             storage_file.write(json.dumps(contents))
 */
 
+// TODO: Finish implementing this function
+void updateVPNConfigFile(std::string filepath, std::string publicIpAddress) {}
+
+/*
+def update_vpn_config_file(filepath, response_ip_address):
+    cli_command = '/bin/sed -i "/remote /c\\remote {} 1194" {}'.format(response_ip_address, filepath)
+    subprocess.Popen(cli_command, shell=True)
+*/
+
 int main()
 {
     // Parse environment variables
