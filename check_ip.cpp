@@ -185,6 +185,7 @@ int main()
 
         cout << "IP addresses match: " << ipAddressesMatch;
 
+        // TODO: Implement better exception handling
         // TODO: Update VPN profile file
         // TODO: Send notifications
         /*
