@@ -84,14 +84,12 @@ std::string fetchPublicIpAddress(std::string url) {
     const Context::Ptr context = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
     HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
     
-    cout << uri.getHost() << endl;
-    cout << uri.getPort() << endl;
-    // cout << session << endl;
+    // cout << uri.getHost() << endl;
+    // cout << uri.getPort() << endl;
 
+    // Parse URL path; handle if none
     string path(uri.getPathAndQuery());
     if (path.empty()) path = "/";
-
-    // cout << path << endl;
 
     HTTPRequest req(HTTPRequest::HTTP_GET, path, HTTPMessage::HTTP_1_1);
 
@@ -99,9 +97,9 @@ std::string fetchPublicIpAddress(std::string url) {
 
     // Parse response
     HTTPResponse res;
-    cout << res.getStatus() << " " << res.getReason() << endl;
 
-    // Print reponse
+    cout << res.getStatus() << " " << res.getReason() << endl; // Debugging
+
     std::string currentPublicIpAddress;
     istream &is = session.receiveResponse(res);
     StreamCopier::copyToString(is, currentPublicIpAddress);
