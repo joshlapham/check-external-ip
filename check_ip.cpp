@@ -175,7 +175,7 @@ int main()
         }
 
         // Initialise logger
-        FormattingChannel *pFCConsole = new FormattingChannel(new PatternFormatter("%s: %p: %t"));
+        FormattingChannel *pFCConsole = new FormattingChannel(new PatternFormatter("%Y-%m-%d %H:%M:%S.%c %t"));
         pFCConsole->setChannel(new ConsoleChannel);
         pFCConsole->open();
         Logger &logger = Logger::create("ConsoleLogger", pFCConsole, Message::PRIO_INFORMATION);
