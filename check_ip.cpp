@@ -93,25 +93,17 @@ class InvalidHTTPResponseException : public exception
 
 std::string fetchPublicIpAddress(const std::string& url) {
     // Make network request; parse current IP address from response
-    URI uri(url);
+    Poco::URI uri(url);
     const Context::Ptr context = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
-    HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
+    Poco::Net::HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
     
     // Parse URL path; handle if none
     string path(uri.getPathAndQuery());
     if (path.empty()) path = "/";
 
-    HTTPRequest req(HTTPRequest::HTTP_GET, path, HTTPMessage::HTTP_1_1);
+    Poco::Net::HTTPRequest req(HTTPRequest::HTTP_GET, path, Poco::Net::HTTPMessage::HTTP_1_1);
 
     session.sendRequest(req);
-
-    /*
-    Poco::URI uri(url);
-    Poco::Net::HTTPSClientSession session(uri.getHost(), uri.getPort());
-    Poco::Net::HTTPRequest req(HTTPRequest::HTTP_GET, uri.getPath(), Poco::Net::HTTPMessage::HTTP_1_1);
-
-    session.sendRequest(req);
-    */
 
     // Parse response
     Poco::Net::HTTPResponse res;
