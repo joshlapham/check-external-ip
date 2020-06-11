@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake"
+                "~/.conan/data/**",
+                "${workspaceFolder}/build/conanbuildinfo.cmake"
             ],
             "defines": [],
             "compilerPath": "/home/linuxbrew/.linuxbrew/bin/gcc",
