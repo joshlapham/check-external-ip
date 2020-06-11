@@ -7,6 +7,6 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 
 conan_basic_setup()
 
-add_executable(check_ip check_ip.cpp)
+add_executable(check_ip check_ip.cpp src/StorageFile.cpp src/StorageFile.h)
 
 target_link_libraries(check_ip ${CONAN_LIBS})
