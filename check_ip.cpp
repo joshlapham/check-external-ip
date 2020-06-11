@@ -3,8 +3,6 @@
 #include <fstream>
 #include <string>
 
-#include <Poco/Net/HTTPSClientSession.h>
-
 #include <Poco/Logger.h>
 #include <Poco/PatternFormatter.h>
 #include <Poco/FormattingChannel.h>
@@ -14,10 +12,6 @@
 #include "src/StorageFile.h"
 #include "src/NetworkService.h"
 
-using namespace std;
-//using namespace Poco::JSON;
-using namespace Poco::Dynamic;
-using namespace Poco::Net;
 using namespace Poco;
 
 class NoStorageFileException : public std::exception
