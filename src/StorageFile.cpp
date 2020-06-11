@@ -42,10 +42,6 @@ Poco::Dynamic::Var StorageFile::_readFileContents() {
 }
 
 void StorageFile::updateLastKnownIpAddress() {
-//    std::string line;
-//    std::ifstream storage_file(_filepath);
-//    Poco::JSON::Parser parser;
-
     // Read contents
     Poco::Dynamic::Var result = _readFileContents();
 
@@ -77,11 +73,6 @@ def update_ip_in_storage_file(filepath, response_ip_address):
 }
 
 std::string StorageFile::lastKnownIpAddress() {
-//    std::string line;
-//    std::ifstream storage_file(_filepath);
-//    Poco::JSON::Parser parser;
-//    std::string jsonContents;
-
     // Read contents
     Poco::Dynamic::Var result = _readFileContents();
 
