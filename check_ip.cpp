@@ -20,21 +20,13 @@ using namespace Poco::Dynamic;
 using namespace Poco::Net;
 using namespace Poco;
 
-class NoStorageFileException : public exception
+class NoStorageFileException : public std::exception
 {
     const char *what() const noexcept override
     {
         return "Storage filepath environment variable was not set; a storage filepath is required";
     }
 } NoStorageFileException;
-
-class InvalidHTTPResponseException : public exception
-{
-    const char *what() const noexcept override
-    {
-        return "HTTP response code was not 200";
-    }
-} InvalidHTTPResponseException;
 
 // TODO: Finish implementing this function
 void updateIpAddressInStorageFile(const std::string& filepath, const std::string& publicIpAddress) {}

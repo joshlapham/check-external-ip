@@ -3,6 +3,7 @@
 //
 
 #include "NetworkService.h"
+#include "Exceptions.h"
 
 #include <utility>
 
