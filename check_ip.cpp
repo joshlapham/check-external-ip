@@ -9,8 +9,8 @@
 #include <Poco/ConsoleChannel.h>
 #include <Poco/Message.h>
 
-#include "src/StorageFile.h"
 #include "src/NetworkService.h"
+#include "src/IPAddressStorageFile.h"
 
 using namespace Poco;
 
@@ -61,7 +61,7 @@ int main()
         logger.information("Fetched current public IP address: %s", currentPublicIpAddress);
 
         // Load storage file; check last known IP address value in storage file
-        StorageFile storageFile(storage_filepath);
+        IPAddressStorageFile storageFile(storage_filepath);
 
         std::string lastKnownIpAddress;
 

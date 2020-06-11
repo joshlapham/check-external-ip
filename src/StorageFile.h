@@ -15,17 +15,12 @@ class StorageFile {
 private:
     std::string _filepath;
 
-    static const std::string JSON_KEY_LAST_KNOWN_IP_ADDRESS;
-
+protected:
     Poco::Dynamic::Var _readFileContents();
     void _writeFileContents(const Poco::JSON::Object::Ptr& object);
 
 public:
     explicit StorageFile(std::string filepath);
-
-    // TODO: Maybe subclass `StorageFile` -- specific keys in JSON storage file
-    void updateLastKnownIpAddress(const std::string& newIpAddress);
-    std::string lastKnownIpAddress();
 };
 
 #endif //CPLUSPLUS_STORAGEFILE_H
