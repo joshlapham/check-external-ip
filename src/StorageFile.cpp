@@ -7,14 +7,47 @@
 #include <fstream>
 
 #include <Poco/JSON/Parser.h>
-#include <Poco/Dynamic/Var.h>
 
 StorageFile::StorageFile(std::string filepath)
 {
     _filepath = std::move(filepath);
 }
 
+Poco::Dynamic::Var StorageFile::_readFileContents() {
+    std::string line;
+    std::ifstream storage_file(_filepath);
+    Poco::JSON::Parser parser;
+    std::string jsonContents;
+    Poco::Dynamic::Var result;
+
+    // Read contents
+    // TODO: DRY
+    if (storage_file.is_open())
+    {
+        while (getline(storage_file, line))
+        {
+            result = parser.parse(line);
+        }
+
+        storage_file.close();
+    }
+    else
+    {
+        // TODO: Should be throwing an exception here; or returning something else
+//        cout << "Unable to open file";
+        return "Unable to open file";
+    }
+
+    return result;
+}
+
 void StorageFile::updateLastKnownIpAddress() {
+//    std::string line;
+//    std::ifstream storage_file(_filepath);
+//    Poco::JSON::Parser parser;
+
+    // Read contents
+    Poco::Dynamic::Var result = _readFileContents();
 
 /*
 def update_ip_in_storage_file(filepath, response_ip_address):
@@ -44,28 +77,13 @@ def update_ip_in_storage_file(filepath, response_ip_address):
 }
 
 std::string StorageFile::lastKnownIpAddress() {
-    std::string line;
-    std::ifstream storage_file(_filepath);
-    Poco::JSON::Parser parser;
-    std::string jsonContents;
-    Poco::Dynamic::Var result;
+//    std::string line;
+//    std::ifstream storage_file(_filepath);
+//    Poco::JSON::Parser parser;
+//    std::string jsonContents;
 
     // Read contents
-    if (storage_file.is_open())
-    {
-        while (getline(storage_file, line))
-        {
-            result = parser.parse(line);
-        }
-
-        storage_file.close();
-    }
-    else
-    {
-        // TODO: Should be throwing an exception here
-//        cout << "Unable to open file";
-        return "Unable to open file";
-    }
+    Poco::Dynamic::Var result = _readFileContents();
 
     Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
 

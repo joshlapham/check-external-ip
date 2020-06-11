@@ -8,9 +8,13 @@
 #include <cstdlib>
 #include <string>
 
+#include <Poco/Dynamic/Var.h>
+
 class StorageFile {
 private:
     std::string _filepath;
+
+    Poco::Dynamic::Var _readFileContents();
 
 public:
     explicit StorageFile(std::string filepath);
