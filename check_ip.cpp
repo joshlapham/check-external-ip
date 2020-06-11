@@ -9,27 +9,22 @@
 #include <Poco/Net/HTTPSClientSession.h>
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPResponse.h>
-#include <Poco/StreamCopier.h>
 #include <Poco/Path.h>
 #include <Poco/URI.h>
+#include <Poco/Format.h>
+#include <Poco/StreamCopier.h>
 
-#include "Poco/Logger.h"
-#include "Poco/PatternFormatter.h"
-#include "Poco/FormattingChannel.h"
-#include "Poco/ConsoleChannel.h"
-#include "Poco/Message.h"
+#include <Poco/Logger.h>
+#include <Poco/PatternFormatter.h>
+#include <Poco/FormattingChannel.h>
+#include <Poco/ConsoleChannel.h>
+#include <Poco/Message.h>
 
 using namespace std;
 using namespace Poco::JSON;
 using namespace Poco::Dynamic;
 using namespace Poco::Net;
 using namespace Poco;
-
-using Poco::Logger;
-using Poco::PatternFormatter;
-using Poco::FormattingChannel;
-using Poco::ConsoleChannel;
-using Poco::Message;
 
 class StorageFile
 {
@@ -110,8 +105,16 @@ std::string fetchPublicIpAddress(std::string url) {
 
     session.sendRequest(req);
 
+    /*
+    Poco::URI uri(url);
+    Poco::Net::HTTPSClientSession session(uri.getHost(), uri.getPort());
+    Poco::Net::HTTPRequest req(HTTPRequest::HTTP_GET, uri.getPath(), Poco::Net::HTTPMessage::HTTP_1_1);
+
+    session.sendRequest(req);
+    */
+
     // Parse response
-    HTTPResponse res;
+    Poco::Net::HTTPResponse res;
 
     // TODO: Make status code value a constant
     if (res.getStatus() != 200)
@@ -120,8 +123,8 @@ std::string fetchPublicIpAddress(std::string url) {
     }
 
     std::string currentPublicIpAddress;
-    istream &is = session.receiveResponse(res);
-    StreamCopier::copyToString(is, currentPublicIpAddress);
+    std::istream &is = session.receiveResponse(res);
+    Poco::StreamCopier::copyToString(is, currentPublicIpAddress);
 
     // Strip newline character
     // TODO: Should probably move this logic elsewhere
