@@ -77,6 +77,19 @@ int main()
 
         logger.information("IP addresses match: %b", ipAddressesMatch);
 
+        // TODO: TESTING!
+        try {
+            logger.information("Updating last known IP in storage file ..");
+
+            storageFile.updateLastKnownIpAddress("123.456.789");
+        }
+        catch (const std::exception &e)
+        {
+//            std::string errorStr = 'Exception when updating storage file: %s', e.what();
+//            std::cerr << errorStr << '\n';
+            logger.error("Exception when updating storage file: %s", e.what());
+        }
+
         // TODO: Implement better exception handling
         // TODO: Update VPN profile file
         // TODO: Send notifications
