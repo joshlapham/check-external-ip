@@ -62,9 +62,21 @@ int main()
 
         // Load storage file; check last known IP address value in storage file
         StorageFile storageFile(storage_filepath);
-        std::string lastKnownIpAddress = storageFile.lastKnownIpAddress();
 
-        logger.information("Last known IP address (from storage file): %s", lastKnownIpAddress);
+        std::string lastKnownIpAddress;
+
+        try {
+            logger.information("Checking last known IP address in storage file ..");
+
+            lastKnownIpAddress = storageFile.lastKnownIpAddress();
+        }
+        catch (const std::exception &e)
+        {
+            // NOTE - this means that JSON key wasn't found in file
+            logger.error("Exception when loading last known IP address from storage file: %s", e.what());
+        }
+
+        logger.information("Last known IP address from storage file: %s", lastKnownIpAddress);
 
         // Check if IP addresses match
         bool ipAddressesMatch = currentPublicIpAddress == lastKnownIpAddress;
