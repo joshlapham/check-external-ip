@@ -26,6 +26,70 @@ using namespace Poco::Dynamic;
 using namespace Poco::Net;
 using namespace Poco;
 
+class NoStorageFileException : public exception
+{
+    const char *what() const noexcept override
+    {
+        return "Storage filepath environment variable was not set; a storage filepath is required";
+    }
+} NoStorageFileException;
+
+class InvalidHTTPResponseException : public exception
+{
+    const char *what() const noexcept override
+    {
+        return "HTTP response code was not 200";
+    }
+} InvalidHTTPResponseException;
+
+class NetworkService
+{
+private:
+    std::string _url;
+
+public:
+    explicit NetworkService(std::string);
+
+    std::string fetchPublicIpAddress() {
+        // Make network request; parse current IP address from response
+        Poco::URI uri(_url);
+        const Context::Ptr context = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
+        Poco::Net::HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
+
+        // Parse URL path; handle if none
+        string path(uri.getPathAndQuery());
+        if (path.empty()) path = "/";
+
+        Poco::Net::HTTPRequest req(HTTPRequest::HTTP_GET, path, Poco::Net::HTTPMessage::HTTP_1_1);
+
+        session.sendRequest(req);
+
+        // Parse response
+        Poco::Net::HTTPResponse res;
+
+        // TODO: Make status code value a constant
+        if (res.getStatus() != 200)
+        {
+            throw InvalidHTTPResponseException;
+        }
+
+        std::string currentPublicIpAddress;
+        std::istream &is = session.receiveResponse(res);
+        Poco::StreamCopier::copyToString(is, currentPublicIpAddress);
+
+        // Strip newline character
+        // TODO: Should probably move this logic elsewhere
+        currentPublicIpAddress.erase(std::remove(currentPublicIpAddress.begin(), currentPublicIpAddress.end(), '\n'), currentPublicIpAddress.end());
+
+        return currentPublicIpAddress;
+    }
+};
+
+NetworkService::NetworkService(std::string url)
+{
+    _url = std::move(url);
+}
+
 class StorageFile
 {
 private:
@@ -73,56 +137,6 @@ public:
 StorageFile::StorageFile(std::string filepath)
 {
     _filepath = std::move(filepath);
-}
-
-class NoStorageFileException : public exception
-{
-    const char *what() const noexcept override
-    {
-        return "Storage filepath environment variable was not set; a storage filepath is required";
-    }
-} NoStorageFileException;
-
-class InvalidHTTPResponseException : public exception
-{
-    const char *what() const noexcept override
-    {
-        return "HTTP response code was not 200";
-    }
-} InvalidHTTPResponseException;
-
-std::string fetchPublicIpAddress(const std::string& url) {
-    // Make network request; parse current IP address from response
-    Poco::URI uri(url);
-    const Context::Ptr context = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
-    Poco::Net::HTTPSClientSession session(uri.getHost(), uri.getPort(), context);
-    
-    // Parse URL path; handle if none
-    string path(uri.getPathAndQuery());
-    if (path.empty()) path = "/";
-
-    Poco::Net::HTTPRequest req(HTTPRequest::HTTP_GET, path, Poco::Net::HTTPMessage::HTTP_1_1);
-
-    session.sendRequest(req);
-
-    // Parse response
-    Poco::Net::HTTPResponse res;
-
-    // TODO: Make status code value a constant
-    if (res.getStatus() != 200)
-    {
-        throw InvalidHTTPResponseException;
-    }
-
-    std::string currentPublicIpAddress;
-    std::istream &is = session.receiveResponse(res);
-    Poco::StreamCopier::copyToString(is, currentPublicIpAddress);
-
-    // Strip newline character
-    // TODO: Should probably move this logic elsewhere
-    currentPublicIpAddress.erase(std::remove(currentPublicIpAddress.begin(), currentPublicIpAddress.end(), '\n'), currentPublicIpAddress.end());
-
-    return currentPublicIpAddress;
 }
 
 // TODO: Finish implementing this function
@@ -183,9 +197,11 @@ int main()
         pFCConsole->open();
         Logger &logger = Logger::create("ConsoleLogger", pFCConsole, Message::PRIO_INFORMATION);
 
+        NetworkService networkService(url);
+
         logger.information("Fetching current public IP address ..");
 
-        std::string currentPublicIpAddress = fetchPublicIpAddress(url);
+        std::string currentPublicIpAddress = networkService.fetchPublicIpAddress();
 
         logger.information("Fetched current public IP address: %s", currentPublicIpAddress);
 
