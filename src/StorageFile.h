@@ -15,6 +15,8 @@ class StorageFile {
 private:
     std::string _filepath;
 
+    static const std::string JSON_KEY_LAST_KNOWN_IP_ADDRESS;
+
     Poco::Dynamic::Var _readFileContents();
     void _writeFileContents(const Poco::JSON::Object::Ptr& object);
 

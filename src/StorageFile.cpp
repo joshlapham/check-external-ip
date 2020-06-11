@@ -7,6 +7,9 @@
 #include <iostream>
 #include <fstream>
 
+// TODO: How to get rid of clang tidy warning here?
+const std::string StorageFile::JSON_KEY_LAST_KNOWN_IP_ADDRESS = "lastKnownIpAddress";
+
 StorageFile::StorageFile(std::string filepath)
 {
     _filepath = std::move(filepath);
@@ -31,7 +34,6 @@ Poco::Dynamic::Var StorageFile::_readFileContents() {
     Poco::Dynamic::Var result;
 
     // Read contents
-    // TODO: DRY
     if (storage_file.is_open())
     {
         while (getline(storage_file, line))
@@ -52,50 +54,19 @@ Poco::Dynamic::Var StorageFile::_readFileContents() {
 }
 
 void StorageFile::updateLastKnownIpAddress(const std::string& newIpAddress) {
-    // Read contents
     Poco::Dynamic::Var result = _readFileContents();
     Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
 
-    // TODO: Make `lastKnownIpAddress` string a constant
-    object->set("lastKnownIpAddress", newIpAddress);
+    object->set(JSON_KEY_LAST_KNOWN_IP_ADDRESS, newIpAddress);
 
     _writeFileContents(object);
-
-/*
-def update_ip_in_storage_file(filepath, response_ip_address):
-    try:
-        with open(filepath, 'r+') as storage_file:
-            contents = json.load(storage_file)
-            contents['lastKnownIpAddress'] = response_ip_address
-            storage_file.write(json.dumps(contents))
-
-    except ValueError:
-        # If we got here, then storage file contents was empty
-        print('Storage file contents was empty')
-
-    except OSError:
-        # If we got here; then storage file failed to update with new IP address
-        print('Failed to update IP address in storage file; overwriting file contents ..')
-
-    finally:
-        with open(filepath, 'w') as storage_file:
-            contents = {
-                "lastKnownIpAddress": response_ip_address
-            }
-
-            storage_file.write(json.dumps(contents))
-*/
-
 }
 
 std::string StorageFile::lastKnownIpAddress() {
-    // Read contents
     Poco::Dynamic::Var result = _readFileContents();
-
     Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
 
-    // TODO: Make `lastKnownIpAddress` string a constant
-    Poco::Dynamic::Var last_known_ip = object->get("lastKnownIpAddress");
+    Poco::Dynamic::Var last_known_ip = object->get(JSON_KEY_LAST_KNOWN_IP_ADDRESS);
 
     std::string last_known_ip_str = last_known_ip.toString();
 
