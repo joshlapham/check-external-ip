@@ -13,10 +13,13 @@ StorageFile::StorageFile(std::string filepath)
 }
 
 void StorageFile::_writeFileContents(const Poco::JSON::Object::Ptr& object) {
+    std::ostringstream oss;
+    Poco::JSON::Stringifier::stringify(object, oss);
+
     std::ofstream storage_file(_filepath);
 
     if (storage_file.is_open()) {
-        storage_file << object;
+        storage_file << oss.str();
         storage_file.close();
     }
 }

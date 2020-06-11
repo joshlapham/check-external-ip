@@ -81,7 +81,7 @@ int main()
         try {
             logger.information("Updating last known IP in storage file ..");
 
-            storageFile.updateLastKnownIpAddress("123.456.789");
+            storageFile.updateLastKnownIpAddress(currentPublicIpAddress);
         }
         catch (const std::exception &e)
         {
