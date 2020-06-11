@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <utility>
 
 #include <Poco/JSON/Parser.h>
 #include <Poco/Dynamic/Var.h>
@@ -31,7 +32,7 @@ private:
     std::string _filepath;
 
 public:
-    StorageFile(std::string);
+    explicit StorageFile(std::string);
 
     std::string lastKnownIpAddress()
     {
@@ -71,12 +72,12 @@ public:
 
 StorageFile::StorageFile(std::string filepath)
 {
-    _filepath = filepath;
+    _filepath = std::move(filepath);
 }
 
 class NoStorageFileException : public exception
 {
-    virtual const char *what() const throw()
+    const char *what() const noexcept override
     {
         return "Storage filepath environment variable was not set; a storage filepath is required";
     }
@@ -84,13 +85,13 @@ class NoStorageFileException : public exception
 
 class InvalidHTTPResponseException : public exception
 {
-    virtual const char *what() const throw()
+    const char *what() const noexcept override
     {
         return "HTTP response code was not 200";
     }
 } InvalidHTTPResponseException;
 
-std::string fetchPublicIpAddress(std::string url) {
+std::string fetchPublicIpAddress(const std::string& url) {
     // Make network request; parse current IP address from response
     URI uri(url);
     const Context::Ptr context = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
@@ -133,7 +134,7 @@ std::string fetchPublicIpAddress(std::string url) {
 }
 
 // TODO: Finish implementing this function
-void updateIpAddressInStorageFile(std::string filepath, std::string publicIpAddress) {}
+void updateIpAddressInStorageFile(const std::string& filepath, const std::string& publicIpAddress) {}
 
 /*
 def update_ip_in_storage_file(filepath, response_ip_address):
@@ -161,7 +162,7 @@ def update_ip_in_storage_file(filepath, response_ip_address):
 */
 
 // TODO: Finish implementing this function
-void updateVPNConfigFile(std::string filepath, std::string publicIpAddress) {}
+void updateVPNConfigFile(const std::string& filepath, const std::string& publicIpAddress) {}
 
 /*
 def update_vpn_config_file(filepath, response_ip_address):
@@ -179,13 +180,13 @@ int main()
         const char *url = std::getenv("JL_CHECK_IP_URL");
         // const char *vpn_profile_filepath = std::getenv("JL_CHECK_IP_VPN_PROFILE_FILEPATH");
 
-        if (storage_filepath == NULL)
+        if (storage_filepath == nullptr)
         {
             throw NoStorageFileException;
         }
 
         // Initialise logger
-        FormattingChannel *pFCConsole = new FormattingChannel(new PatternFormatter("%Y-%m-%d %H:%M:%S.%c %t"));
+        auto *pFCConsole = new FormattingChannel(new PatternFormatter("%Y-%m-%d %H:%M:%S.%c %t"));
         pFCConsole->setChannel(new ConsoleChannel);
         pFCConsole->open();
         Logger &logger = Logger::create("ConsoleLogger", pFCConsole, Message::PRIO_INFORMATION);
@@ -205,7 +206,7 @@ int main()
         // Check if IP addresses match
         bool ipAddressesMatch = currentPublicIpAddress == lastKnownIpAddress;
 
-        logger.information("IP addresses match: %d", ipAddressesMatch);
+        logger.information("IP addresses match: %b", ipAddressesMatch);
 
         // TODO: Implement better exception handling
         // TODO: Update VPN profile file
