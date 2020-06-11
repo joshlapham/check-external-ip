@@ -4,20 +4,27 @@
 
 #include "StorageFile.h"
 
+#include <iostream>
 #include <fstream>
-
-#include <Poco/JSON/Parser.h>
 
 StorageFile::StorageFile(std::string filepath)
 {
     _filepath = std::move(filepath);
 }
 
+void StorageFile::_writeFileContents(const Poco::JSON::Object::Ptr& object) {
+    std::ofstream storage_file(_filepath);
+
+    if (storage_file.is_open()) {
+        storage_file << object;
+        storage_file.close();
+    }
+}
+
 Poco::Dynamic::Var StorageFile::_readFileContents() {
     std::string line;
     std::ifstream storage_file(_filepath);
     Poco::JSON::Parser parser;
-    std::string jsonContents;
     Poco::Dynamic::Var result;
 
     // Read contents
@@ -41,9 +48,15 @@ Poco::Dynamic::Var StorageFile::_readFileContents() {
     return result;
 }
 
-void StorageFile::updateLastKnownIpAddress() {
+void StorageFile::updateLastKnownIpAddress(const std::string& newIpAddress) {
     // Read contents
     Poco::Dynamic::Var result = _readFileContents();
+    Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
+
+    // TODO: Make `lastKnownIpAddress` string a constant
+    object->set("lastKnownIpAddress", newIpAddress);
+
+    _writeFileContents(object);
 
 /*
 def update_ip_in_storage_file(filepath, response_ip_address):

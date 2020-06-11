@@ -9,17 +9,20 @@
 #include <string>
 
 #include <Poco/Dynamic/Var.h>
+#include <Poco/JSON/Parser.h>
 
 class StorageFile {
 private:
     std::string _filepath;
 
     Poco::Dynamic::Var _readFileContents();
+    void _writeFileContents(const Poco::JSON::Object::Ptr& object);
 
 public:
     explicit StorageFile(std::string filepath);
 
-    void updateLastKnownIpAddress();
+    // TODO: Maybe subclass `StorageFile` -- specific keys in JSON storage file
+    void updateLastKnownIpAddress(const std::string& newIpAddress);
     std::string lastKnownIpAddress();
 };
 
