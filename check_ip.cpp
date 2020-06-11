@@ -4,8 +4,6 @@
 #include <string>
 #include <utility>
 
-#include <Poco/JSON/Parser.h>
-#include <Poco/Dynamic/Var.h>
 #include <Poco/Net/HTTPSClientSession.h>
 #include <Poco/Net/HTTPRequest.h>
 #include <Poco/Net/HTTPResponse.h>
@@ -20,8 +18,10 @@
 #include <Poco/ConsoleChannel.h>
 #include <Poco/Message.h>
 
+#include "src/StorageFile.h"
+
 using namespace std;
-using namespace Poco::JSON;
+//using namespace Poco::JSON;
 using namespace Poco::Dynamic;
 using namespace Poco::Net;
 using namespace Poco;
@@ -88,55 +88,6 @@ public:
 NetworkService::NetworkService(std::string url)
 {
     _url = std::move(url);
-}
-
-class StorageFile
-{
-private:
-    std::string _filepath;
-
-public:
-    explicit StorageFile(std::string);
-
-    std::string lastKnownIpAddress()
-    {
-        string line;
-        ifstream storage_file(_filepath);
-        Parser parser;
-        std::string jsonContents;
-        Var result;
-
-        // Read contents
-        if (storage_file.is_open())
-        {
-            while (getline(storage_file, line))
-            {
-                result = parser.parse(line);
-            }
-
-            storage_file.close();
-        }
-        else
-        {
-            // TODO: Should be throwing an exception here
-            cout << "Unable to open file";
-            return "Unable to open file";
-        }
-
-        Object::Ptr object = result.extract<Object::Ptr>();
-
-        // TODO: Make `lastKnownIpAddress` string a constant
-        Var last_known_ip = object->get("lastKnownIpAddress");
-
-        std::string last_known_ip_str = last_known_ip.toString();
-
-        return last_known_ip_str;
-    }
-};
-
-StorageFile::StorageFile(std::string filepath)
-{
-    _filepath = std::move(filepath);
 }
 
 // TODO: Finish implementing this function
