@@ -14,6 +14,8 @@ private:
 
 public:
     explicit StorageFile(std::string filepath);
+
+    void updateLastKnownIpAddress();
     std::string lastKnownIpAddress();
 };
 

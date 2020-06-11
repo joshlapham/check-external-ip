@@ -14,6 +14,35 @@ StorageFile::StorageFile(std::string filepath)
     _filepath = std::move(filepath);
 }
 
+void StorageFile::updateLastKnownIpAddress() {
+
+/*
+def update_ip_in_storage_file(filepath, response_ip_address):
+    try:
+        with open(filepath, 'r+') as storage_file:
+            contents = json.load(storage_file)
+            contents['lastKnownIpAddress'] = response_ip_address
+            storage_file.write(json.dumps(contents))
+
+    except ValueError:
+        # If we got here, then storage file contents was empty
+        print('Storage file contents was empty')
+
+    except OSError:
+        # If we got here; then storage file failed to update with new IP address
+        print('Failed to update IP address in storage file; overwriting file contents ..')
+
+    finally:
+        with open(filepath, 'w') as storage_file:
+            contents = {
+                "lastKnownIpAddress": response_ip_address
+            }
+
+            storage_file.write(json.dumps(contents))
+*/
+
+}
+
 std::string StorageFile::lastKnownIpAddress() {
     std::string line;
     std::ifstream storage_file(_filepath);

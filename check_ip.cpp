@@ -29,34 +29,6 @@ class NoStorageFileException : public std::exception
 } NoStorageFileException;
 
 // TODO: Finish implementing this function
-void updateIpAddressInStorageFile(const std::string& filepath, const std::string& publicIpAddress) {}
-
-/*
-def update_ip_in_storage_file(filepath, response_ip_address):
-    try:
-        with open(filepath, 'r+') as storage_file:
-            contents = json.load(storage_file)
-            contents['lastKnownIpAddress'] = response_ip_address
-            storage_file.write(json.dumps(contents))
-
-    except ValueError:
-        # If we got here, then storage file contents was empty
-        print('Storage file contents was empty')
-
-    except OSError:
-        # If we got here; then storage file failed to update with new IP address
-        print('Failed to update IP address in storage file; overwriting file contents ..')
-
-    finally:
-        with open(filepath, 'w') as storage_file:
-            contents = {
-                "lastKnownIpAddress": response_ip_address
-            }
-
-            storage_file.write(json.dumps(contents))
-*/
-
-// TODO: Finish implementing this function
 void updateVPNConfigFile(const std::string& filepath, const std::string& publicIpAddress) {}
 
 /*
