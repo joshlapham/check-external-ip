@@ -13,9 +13,11 @@ class NetworkService
 private:
     std::string _url;
 
+protected:
+    std::string _makeHTTPSGETRequest();
+
 public:
-    explicit NetworkService(std::string);
-    std::string fetchPublicIpAddress();
+    explicit NetworkService(std::string url);
 };
 
 #endif //CPLUSPLUS_NETWORKSERVICE_H

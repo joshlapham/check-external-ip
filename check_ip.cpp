@@ -9,8 +9,8 @@
 #include <Poco/ConsoleChannel.h>
 #include <Poco/Message.h>
 
-#include "src/NetworkService.h"
 #include "src/IPAddressStorageFile.h"
+#include "src/IPAddressNetworkService.h"
 
 using namespace Poco;
 
@@ -52,7 +52,7 @@ int main()
         pFCConsole->open();
         Logger &logger = Logger::create("ConsoleLogger", pFCConsole, Message::PRIO_INFORMATION);
 
-        NetworkService networkService(url);
+        IPAddressNetworkService networkService(url);
 
         logger.information("Fetching current public IP address ..");
 
