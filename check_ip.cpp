@@ -3,7 +3,6 @@
 #include <fstream>
 #include <string>
 
-#include <Poco/JSON/JSON.h>
 #include <Poco/JSON/Parser.h>
 #include <Poco/Dynamic/Var.h>
 #include <Poco/Net/HTTPSClientSession.h>
