@@ -70,38 +70,32 @@ int main()
         StorageFile storageFile(storage_filepath);
         std::string lastKnownIpAddress = storageFile.lastKnownIpAddress();
 
-        logger.information("Last known IP (from storage file): %s", lastKnownIpAddress);
+        logger.information("Last known IP address (from storage file): %s", lastKnownIpAddress);
 
         // Check if IP addresses match
         bool ipAddressesMatch = currentPublicIpAddress == lastKnownIpAddress;
 
         logger.information("IP addresses match: %b", ipAddressesMatch);
 
-        // TODO: TESTING!
-        try {
-            logger.information("Updating last known IP in storage file ..");
+        // If different, then update storage file
+        if (!ipAddressesMatch) {
+            try {
+                logger.information("Updating last known IP address in storage file ..");
 
-            storageFile.updateLastKnownIpAddress(currentPublicIpAddress);
-        }
-        catch (const std::exception &e)
-        {
-//            std::string errorStr = 'Exception when updating storage file: %s', e.what();
-//            std::cerr << errorStr << '\n';
-            logger.error("Exception when updating storage file: %s", e.what());
+                storageFile.updateLastKnownIpAddress(currentPublicIpAddress);
+
+                logger.information("Successfully updated last known IP address in storage file");
+            }
+            catch (const std::exception &e)
+            {
+                logger.error("Exception when updating storage file: %s", e.what());
+            }
         }
 
         // TODO: Implement better exception handling
         // TODO: Update VPN profile file
         // TODO: Send notifications
         /*
-        # If different, then update storage file
-        if last_known_ip != response_ip_address:
-            logger.info('Last known IP does not match current IP!')
-
-            update_ip_in_storage_file(storage_filepath, response_ip_address)
-
-            logger.info('Successfully updated IP address in storage file')
-
             # Update VPN config file
             logger.info('Updating VPN profile ..')
 
